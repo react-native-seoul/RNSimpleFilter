@@ -2,6 +2,7 @@ import React, { PureComponent, Fragment, createRef } from 'react'
 import { 
   Linking,
   StyleSheet, 
+  View,
   Text, 
   TextInput, 
   Image, 
