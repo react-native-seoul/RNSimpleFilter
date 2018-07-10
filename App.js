@@ -1,5 +1,6 @@
-import React, { PureComponent, createRef } from 'react';
+import React, { PureComponent, Fragment, createRef } from 'react'
 import { 
+  Linking,
   StyleSheet, 
   Text, 
   TextInput, 
@@ -7,30 +8,55 @@ import {
   SafeAreaView, 
   ScrollView, 
   KeyboardAvoidingView, 
-  FlatList 
-} from 'react-native';
+  FlatList,
+  TouchableOpacity 
+} from 'react-native'
 
 const frameworks = [
-  'React', 
-  'React-Native', 
-  'Proton-Native', 
-  'Redux',
-  'MobX',
-  'React-Router'
+  {
+    title: 'React',
+    url: 'https://reactjs.org/'
+  },
+  {
+    title: 'React-Native',
+    url: 'https://facebook.github.io/react-native/'
+  },
+  {
+    title: 'Proton-Native',
+    url: 'https://proton-native.js.org/'
+  },
+  {
+    title: 'Redux',
+    url: 'https://redux.js.org/'
+  },
+  {
+    title: 'MobX',
+    url: 'https://mobx.js.org/index.html'
+  },
+  {
+    title: 'React-Router',
+    url: 'https://reacttraining.com/react-router/'
+  }  
 ]
 
-const _keyExtractor = item => item
+const _keyExtractor = item => item.title
 
 const _renderItem = ({ item }) => (
-  <Text style={styles.itemTextStyle}>
-    {item}
-  </Text>
+  <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
+    <Text style={styles.itemTextStyle}>
+      {item.title}
+    </Text>
+  </TouchableOpacity>
 )
 
 // 자식 컴포넌트
 const List = ({ filterBy }) => {
   const filteredData = filterBy.length > 0 
-    ? frameworks.filter(item => item.indexOf(filterBy) > -1)
+    ? frameworks.filter(item => {
+        const cmpTitle = item.title.toLowerCase()
+        const cmpFilter = filterBy.toLowerCase()
+        return cmpTitle.indexOf(cmpFilter) > -1
+      })
     : frameworks
   return (
     <FlatList 
@@ -45,9 +71,16 @@ const List = ({ filterBy }) => {
 //부모 컴포넌트
 export default class App extends PureComponent {
   state = {
-    filterBy: ''
+    filterBy: '',
+    hasError: false
   }
   textInputRef = createRef()
+
+  componentDidCatch(error) {
+    if (error) {
+      this.setState({ hasError: true })
+    }    
+  }
 
   updateFilter = text => {
     let returnedText = '';
@@ -69,7 +102,7 @@ export default class App extends PureComponent {
   }
 
   render() {
-    const { filterBy } = this.state;
+    const { filterBy, hasError } = this.state;
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView>
@@ -83,18 +116,28 @@ export default class App extends PureComponent {
               source={require('./assets/RNS.png')}
             />
             <Text style={styles.title}>리액트 프레임워크/패키지 필터</Text>
-            <TextInput
-              ref={this.textInputRef}
-              style={styles.filterStyle}
-              placeholder="필터를 입력해주세요."
-              onChangeText={this.updateFilter}
-              onBlur={this.onBlurClear}
-            />
-            <List filterBy={filterBy} />
+            {hasError ? (
+              <View style={styles.errorMsg}>
+                오류 발생! 새로고침을 해주세요.
+              </View>
+            ) : (
+              <Fragment> 
+                <TextInput
+                  ref={this.textInputRef}
+                  style={styles.filterStyle}
+                  placeholder="필터를 입력해주세요."
+                  onChangeText={this.updateFilter}
+                  onBlur={this.onBlurClear}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+                <List filterBy={filterBy} />
+              </Fragment>
+            )}            
           </KeyboardAvoidingView>
         </ScrollView>
       </SafeAreaView>
-    );
+    )
   }
 }
 
@@ -130,5 +173,9 @@ const styles = StyleSheet.create({
   itemTextStyle: {
     fontSize: 15,
     color: '#444'
+  },
+  errorMsg: {
+    flex: 1,
+    justifyContent: 'center'
   }
-});
+})
