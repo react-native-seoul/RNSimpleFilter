@@ -54,6 +54,7 @@ class List extends PureComponent<ListProps, ListState> {
     const { filterBy } = nextProps
     if (filterBy !== prevState.filterBy) {
       const filteredData = filterData(nextProps.filterBy)
+      console.log('List(자식) 컴포넌트 업데이트 시작')
       console.table({
         List: {
           'LifeCycle Hook Method': 'static getDerivedStateFromProps',
@@ -78,6 +79,7 @@ class List extends PureComponent<ListProps, ListState> {
       filterBy: '',
       filteredData: frameworks
     }
+    console.log('List(자식) 컴포넌트 시작')
     console.table({
       List: {
         'LifeCycle Hook Method': 'constructor',
@@ -101,6 +103,7 @@ class List extends PureComponent<ListProps, ListState> {
         snapshot: undefined
       }
     }, tableTitle)
+    console.log('List(자식) 컴포넌트 마운트됨')
   }
 
   getSnapshotBeforeUpdate(prevProps: any, prevState: filterState) {
@@ -128,6 +131,7 @@ class List extends PureComponent<ListProps, ListState> {
         snapshot: JSON.stringify(snapShot)
       }
     }, tableTitle)
+    console.log('List(자식) 컴포넌트 렌더됨')
   }
 
   componentWillUnmount() {
@@ -141,6 +145,7 @@ class List extends PureComponent<ListProps, ListState> {
         snapshot: undefined
       }
     }, tableTitle)
+    console.log('List(자식) 컴포넌트 언마운트')
   }
 
   render() {

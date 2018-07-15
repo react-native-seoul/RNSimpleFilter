@@ -27,6 +27,7 @@ type filterState = {
  */
 export default class FilterContainer extends PureComponent<any, filterState> {
   static getDerivedStateFromProps(nextProps: any, prevState: filterState) {
+    console.log('FilterContainer(부모) 컴포넌트 업데이트 시작')
     console.table({
       FilterContainer: {
         'LifeCycle Hook Method': 'static getDerivedStateFromProps',
@@ -48,6 +49,7 @@ export default class FilterContainer extends PureComponent<any, filterState> {
       hasError: false,
       errorInfo: undefined
     }
+    console.log('FilterContainer(부모) 컴포넌트 시작')
     console.table({
       FilterContainer: {
         'LifeCycle Hook Method': 'constructor',
@@ -66,6 +68,7 @@ export default class FilterContainer extends PureComponent<any, filterState> {
         hasError: true,
         errorInfo: info
       }, () => {
+        console.log('List(자식)에 대한 에러 발견')
         console.table({
           FilterContainer: {
             'LifeCycle Hook Method': 'componentDidCatch',
@@ -91,6 +94,7 @@ export default class FilterContainer extends PureComponent<any, filterState> {
         snapshot: undefined
       }
     }, tableTitle)
+    console.log('FilterContainer(부모) 컴포넌트 마운트됨')
   }
 
   getSnapshotBeforeUpdate(prevProps: any, prevState: filterState) {
@@ -118,6 +122,7 @@ export default class FilterContainer extends PureComponent<any, filterState> {
         snapshot: JSON.stringify(snapShot)
       }
     }, tableTitle)
+    console.log('FilterContainer(부모) 컴포넌트 렌더됨')
   }
 
   componentWillUnmount() {
@@ -131,6 +136,7 @@ export default class FilterContainer extends PureComponent<any, filterState> {
         snapshot: undefined
       }
     }, tableTitle)
+    console.log('FilterContainer(부모) 컴포넌트 언마운트')
   }
 
   updateFilter = (text: string) => {
