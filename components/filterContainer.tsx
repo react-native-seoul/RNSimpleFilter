@@ -12,7 +12,7 @@ import {
   ScrollView,
   StyleSheet
 } from 'react-native'
-import ErrorMsg from '../errorMsg'
+import ErrorMsg from '../utils/errorMsg'
 import List from './list'
 import { tableTitle } from '../utils/consoleFuncs'
 
