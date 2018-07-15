@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import {
   Text,
   FlatList,
@@ -7,7 +7,7 @@ import {
   Linking,
   StyleSheet
 } from 'react-native'
-import frameworks from '../frameworks.json'
+import frameworks from '../../frameworks.json'
 import { tableTitle } from '../utils/consoleFuncs'
 
 type frameworkDatum = {
@@ -21,6 +21,10 @@ type ListProps = {
 
 type ListState = ListProps & {
   filteredData: frameworkDatum[]
+}
+
+type SnapShot = { // snapshot 타입을 지정하세요 
+  [s: string]: any
 }
 
 const filterData = (filterBy: string):frameworkDatum[] => {
@@ -49,28 +53,30 @@ const _renderItem: ListRenderItem<frameworkDatum> = ({ item }) => (
 /** 
  * @namespace ChildListComponent
  */
-class List extends PureComponent<ListProps, ListState> {
+class List extends Component<ListProps, ListState> {
   static getDerivedStateFromProps(nextProps: ListProps, prevState: ListState) {
     const { filterBy } = nextProps
+    let returnObj = null;
+    console.log('List(자식) 컴포넌트 업데이트 필요유무 체크')
     if (filterBy !== prevState.filterBy) {
       const filteredData = filterData(nextProps.filterBy)
-      console.log('List(자식) 컴포넌트 업데이트 시작')
-      console.table({
-        List: {
-          'LifeCycle Hook Method': 'static getDerivedStateFromProps',
-          prevState: JSON.stringify(prevState), 
-          nextState: undefined, 
-          prevProps: undefined, 
-          nextProps: JSON.stringify(nextProps), 
-          snapshot: undefined
-        }
-      }, tableTitle)
-      return {
+      returnObj = {
         filterBy,
         filteredData
-      }
+      }      
     }
-    return null
+    console.log(`업데이트 필요${returnObj ? '' : '없음'}`)
+    console.table({
+      List: {
+        'LifeCycle Hook Method': 'static getDerivedStateFromProps',
+        prevState: JSON.stringify(prevState), 
+        nextState: JSON.stringify(returnObj), 
+        prevProps: undefined, 
+        nextProps: JSON.stringify(nextProps), 
+        snapshot: undefined
+      }
+    }, tableTitle)
+    return returnObj
   }
 
   constructor(props: ListProps) {
@@ -92,7 +98,29 @@ class List extends PureComponent<ListProps, ListState> {
     }, tableTitle)
   }
 
+  shouldComponentUpdate(nextProps: ListProps, nextState: ListState) {    
+    let returnBoolean = true
+    if (nextState.filterBy === this.state.filterBy) {
+      console.log('List(자식) 컴포넌트 업데이트 하지않음')
+      returnBoolean = false
+    } else {
+      console.log('List(자식) 컴포넌트 업데이트 시작')
+    }
+    console.table({
+      List: {
+        'LifeCycle Hook Method': 'shouldComponentUpdate',
+        prevState: JSON.stringify(this.state), 
+        nextState: JSON.stringify(nextState), 
+        prevProps: JSON.stringify(this.props),
+        nextProps: JSON.stringify(nextProps), 
+        snapshot: undefined
+      }
+    }, tableTitle)
+    return returnBoolean
+  }
+
   componentDidMount() {
+    console.log('List(자식) 컴포넌트 마운트됨')
     console.table({
       List: {
         'LifeCycle Hook Method': 'componentDidMount',
@@ -102,11 +130,10 @@ class List extends PureComponent<ListProps, ListState> {
         nextProps: JSON.stringify(this.props), 
         snapshot: undefined
       }
-    }, tableTitle)
-    console.log('List(자식) 컴포넌트 마운트됨')
+    }, tableTitle)    
   }
 
-  getSnapshotBeforeUpdate(prevProps: any, prevState: filterState) {
+  getSnapshotBeforeUpdate(prevProps: ListProps, prevState: ListState) {
     console.table({
       List: {
         'LifeCycle Hook Method': 'getSnapshotBeforeUpdate',
@@ -120,7 +147,8 @@ class List extends PureComponent<ListProps, ListState> {
     return null
   }
 
-  componentDidUpdate(prevProps: any, prevState: filterState, snapShot: any) {
+  componentDidUpdate(prevProps: ListProps, prevState: ListState, snapShot: SnapShot) {
+    console.log('List(자식) 컴포넌트 렌더됨')
     console.table({
       List: {
         'LifeCycle Hook Method': 'componentDidUpdate',
@@ -130,11 +158,11 @@ class List extends PureComponent<ListProps, ListState> {
         nextProps: JSON.stringify(this.props), 
         snapshot: JSON.stringify(snapShot)
       }
-    }, tableTitle)
-    console.log('List(자식) 컴포넌트 렌더됨')
+    }, tableTitle)    
   }
 
   componentWillUnmount() {
+    console.log('List(자식) 컴포넌트 언마운트')
     console.table({
       List: {
         'LifeCycle Hook Method': 'componentWillUnmount',
@@ -144,12 +172,12 @@ class List extends PureComponent<ListProps, ListState> {
         nextProps: JSON.stringify(this.props), 
         snapshot: undefined
       }
-    }, tableTitle)
-    console.log('List(자식) 컴포넌트 언마운트')
+    }, tableTitle)    
   }
 
   render() {
     const { filteredData } = this.state
+    console.log('List(자식) 컴포넌트 렌더')
     console.table({
       List: {
         'LifeCycle Hook Method': 'render',

@@ -1,5 +1,5 @@
 import React, {
-  PureComponent, 
+  Component, 
   createRef,
   RefObject,
   ErrorInfo
@@ -25,9 +25,10 @@ type filterState = {
 /** 
  * @namespace ParentFilterComponent
  */
-export default class FilterContainer extends PureComponent<any, filterState> {
+export default class FilterContainer extends Component<any, filterState> {
   static getDerivedStateFromProps(nextProps: any, prevState: filterState) {
-    console.log('FilterContainer(부모) 컴포넌트 업데이트 시작')
+    console.log('FilterContainer(부모) 컴포넌트 업데이트 필요유무 체크')
+    console.log('업데이트 필요없음')
     console.table({
       FilterContainer: {
         'LifeCycle Hook Method': 'static getDerivedStateFromProps',
@@ -62,6 +63,27 @@ export default class FilterContainer extends PureComponent<any, filterState> {
     }, tableTitle)
   }
 
+  shouldComponentUpdate(nextProps: any, nextState: filterState) {
+    let returnBoolean = true    
+    if (JSON.stringify(this.state) === JSON.stringify(nextState)) {
+      console.log('FilterContainer(부모) 컴포넌트 업데이트 하지않음 ')
+      returnBoolean = false
+    } else {
+      console.log('FilterContainer(부모) 컴포넌트 업데이트 시작')
+    } 
+    console.table({
+      FilterContainer: {
+        'LifeCycle Hook Method': 'shouldComponentUpdate',
+        prevState: JSON.stringify(this.state), 
+        nextState: JSON.stringify(nextState), 
+        prevProps: JSON.stringify(this.props),
+        nextProps: JSON.stringify(nextProps), 
+        snapshot: undefined
+      }
+    }, tableTitle)
+    return returnBoolean   
+  }
+
   componentDidCatch(error: Error, info: ErrorInfo) {
     if (error) {
       this.setState({ 
@@ -84,6 +106,7 @@ export default class FilterContainer extends PureComponent<any, filterState> {
   }
 
   componentDidMount() {
+    console.log('FilterContainer(부모) 컴포넌트 마운트됨')
     console.table({
       FilterContainer: {
         'LifeCycle Hook Method': 'componentDidMount',
@@ -93,11 +116,10 @@ export default class FilterContainer extends PureComponent<any, filterState> {
         nextProps: JSON.stringify(this.props), 
         snapshot: undefined
       }
-    }, tableTitle)
-    console.log('FilterContainer(부모) 컴포넌트 마운트됨')
+    }, tableTitle)    
   }
 
-  getSnapshotBeforeUpdate(prevProps: any, prevState: filterState) {
+  getSnapshotBeforeUpdate(prevProps: any, prevState: filterState) {    
     console.table({
       FilterContainer: {
         'LifeCycle Hook Method': 'getSnapshotBeforeUpdate',
@@ -112,6 +134,7 @@ export default class FilterContainer extends PureComponent<any, filterState> {
   }
 
   componentDidUpdate(prevProps: any, prevState: filterState, snapShot: any) {
+    console.log('FilterContainer(부모) 컴포넌트 렌더됨')
     console.table({
       FilterContainer: {
         'LifeCycle Hook Method': 'componentDidUpdate',
@@ -121,11 +144,11 @@ export default class FilterContainer extends PureComponent<any, filterState> {
         nextProps: JSON.stringify(this.props), 
         snapshot: JSON.stringify(snapShot)
       }
-    }, tableTitle)
-    console.log('FilterContainer(부모) 컴포넌트 렌더됨')
+    }, tableTitle)    
   }
 
   componentWillUnmount() {
+    console.log('FilterContainer(부모) 컴포넌트 언마운트')
     console.table({
       FilterContainer: {
         'LifeCycle Hook Method': 'componentWillUnmount',
@@ -135,8 +158,7 @@ export default class FilterContainer extends PureComponent<any, filterState> {
         nextProps: JSON.stringify(this.props), 
         snapshot: undefined
       }
-    }, tableTitle)
-    console.log('FilterContainer(부모) 컴포넌트 언마운트')
+    }, tableTitle)    
   }
 
   updateFilter = (text: string) => {
@@ -160,6 +182,7 @@ export default class FilterContainer extends PureComponent<any, filterState> {
 
   render() {
     const { filterBy, hasError, errorInfo } = this.state;
+    console.log('FilterContainer(부모) 컴포넌트 렌더')
     console.table({
       FilterContainer: {
         'LifeCycle Hook Method': 'render',
@@ -174,7 +197,7 @@ export default class FilterContainer extends PureComponent<any, filterState> {
       <ScrollView contentContainerStyle={styles.container}>        
         <Image 
           style={styles.imageContainer}
-          source={require('../assets/RNS.png')}
+          source={require('../../assets/RNS.png')}
         />
         <Text style={styles.title}>리액트 프레임워크/패키지 필터</Text>
         {hasError ? (
