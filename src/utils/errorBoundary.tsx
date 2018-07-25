@@ -1,4 +1,4 @@
-import React, { PureComponent, ErrorInfo } from 'react'
+import React, { Component, ErrorInfo } from 'react'
 import ErrorMsg from '../utils/errorMsg'
 import { tableTitle } from '../utils/consoleFuncs'
 
@@ -7,7 +7,7 @@ type appState = {
   errorInfo?: ErrorInfo
 }
 
-export default class ErrorBoundary extends PureComponent<any, appState> {
+export default class ErrorBoundary extends Component<any, appState> {
   state = { 
     hasError: false,
     errorInfo: undefined

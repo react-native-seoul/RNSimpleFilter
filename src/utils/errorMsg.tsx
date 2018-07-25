@@ -1,4 +1,4 @@
-import React, { SFC, ErrorInfo, ReactElement } from 'react'
+import React, { SFC, ErrorInfo } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   errorMsgContainer: {
     flex: 1,
     justifyContent: 'center',
-    marginTop: -110
+    paddingBottom: 110
   },
   errorTitleContainer: {
     flexDirection: 'row',

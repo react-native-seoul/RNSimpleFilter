@@ -189,9 +189,7 @@ export default class FilterContainer extends Component<any, filterState> {
           />
         </View>
         <View style={styles.bottomPart}>
-          <ErrorBoundary>
-            <List filterBy={filterBy} />
-          </ErrorBoundary>
+          <List filterBy={filterBy} />
         </View>         
       </ScrollView>
     )

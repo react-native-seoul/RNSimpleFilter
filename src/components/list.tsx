@@ -197,7 +197,7 @@ class List extends Component<ListProps, ListState> {
       }
     }, tableTitle)
     if (boom) {
-      return (<ErrorMsg />)
+      throw new Error()
     }
     return (
       <View>
@@ -207,12 +207,12 @@ class List extends Component<ListProps, ListState> {
           keyExtractor={_keyExtractor}
           renderItem={_renderItem}
         />
-        <TouchableOpacity onPress={this.onCauseError}>
+        {/* <TouchableOpacity onPress={this.onCauseError}> 무슨 이유때문인지 expo에서 error catch 실패
           <View style={styles.errorButton}>
             <Text>에러 일으키기</Text>
           </View>
-        </TouchableOpacity> 
-      </View>
+    </TouchableOpacity> */}
+      </View> 
     )
   }
 }
@@ -238,5 +238,3 @@ const styles = StyleSheet.create({
     borderRadius: 5
   }
 })
-
-// throw new Error('List Component(자식) threw an Error!!!')
