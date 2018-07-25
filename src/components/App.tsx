@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component, ErrorInfo } from 'react'
 import { SafeAreaView } from 'react-native'
 import FilterContainer from './filterContainer'
+
 /** 
  * @namespace MainApp 
  */

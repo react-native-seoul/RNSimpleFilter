@@ -1,8 +1,8 @@
-import React, { SFC, ErrorInfo } from 'react'
+import React, { SFC, ErrorInfo, ReactElement } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 
-const ErrorMsg: SFC<{ info?: ErrorInfo }> = info => (
+const ErrorMsg: SFC<{ info?: ErrorInfo }> = ({ info }) => (
   <View style={styles.errorMsgContainer}>
     <View style={styles.errorTitleContainer}>
       <MaterialIcons 
@@ -14,9 +14,11 @@ const ErrorMsg: SFC<{ info?: ErrorInfo }> = info => (
         오류 발생! 새로고침을 해주세요.
       </Text>
     </View>
-    <Text style={styles.errorContents}>
-      {info}
-    </Text>
+    {info && (
+      <Text style={styles.errorContents}>
+        {info}
+      </Text>
+    )}
   </View>
 )
 

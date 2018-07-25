@@ -2,24 +2,21 @@ import React, {
   Component, 
   createRef,
   RefObject,
-  ErrorInfo
 } from 'react'
 import {
   Text,
+  View,
   Image,
   TextInput,
-  KeyboardAvoidingView,
   ScrollView,
   StyleSheet
 } from 'react-native'
-import ErrorMsg from '../utils/errorMsg'
 import List from './list'
 import { tableTitle } from '../utils/consoleFuncs'
+import ErrorBoundary from '../utils/errorBoundary';
 
 type filterState = {
   filterBy: string,
-  hasError: boolean,
-  errorInfo?: ErrorInfo
 }
 
 /** 
@@ -47,8 +44,6 @@ export default class FilterContainer extends Component<any, filterState> {
     super(props)
     this.state = {
       filterBy: '',
-      hasError: false,
-      errorInfo: undefined
     }
     console.log('FilterContainer(부모) 컴포넌트 시작')
     console.table({
@@ -82,27 +77,6 @@ export default class FilterContainer extends Component<any, filterState> {
       }
     }, tableTitle)
     return returnBoolean   
-  }
-
-  componentDidCatch(error: Error, info: ErrorInfo) {
-    if (error) {
-      this.setState({ 
-        hasError: true,
-        errorInfo: info
-      }, () => {
-        console.log('List(자식)에 대한 에러 발견')
-        console.table({
-          FilterContainer: {
-            'LifeCycle Hook Method': 'componentDidCatch',
-            prevState: undefined, 
-            nextState: JSON.stringify(this.state), 
-            prevProps: undefined, 
-            nextProps: JSON.stringify(this.props), 
-            snapshot: undefined
-          }
-        }, tableTitle)
-      })
-    }    
   }
 
   componentDidMount() {
@@ -181,7 +155,7 @@ export default class FilterContainer extends Component<any, filterState> {
   }
 
   render() {
-    const { filterBy, hasError, errorInfo } = this.state;
+    const { filterBy } = this.state;
     console.log('FilterContainer(부모) 컴포넌트 렌더')
     console.table({
       FilterContainer: {
@@ -194,31 +168,31 @@ export default class FilterContainer extends Component<any, filterState> {
       }
     }, tableTitle)
     return (
-      <ScrollView contentContainerStyle={styles.container}>        
-        <Image 
-          style={styles.imageContainer}
-          source={require('../../assets/RNS.png')}
-        />
-        <Text style={styles.title}>리액트 프레임워크/패키지 필터</Text>
-        {hasError ? (
-          <ErrorMsg info={errorInfo} />
-        ) : (
-          <KeyboardAvoidingView 
-            behavior="padding" 
-            enabled
-          >
-            <TextInput
-              ref={this.textInputRef}
-              style={styles.filterStyle}
-              placeholder="필터를 입력해주세요."
-              onChangeText={this.updateFilter}
-              onBlur={this.onBlurClear}
-              autoCapitalize="none"
-              autoCorrect={false}
+      <ScrollView contentContainerStyle={styles.container}>       
+        <View style={styles.topPart}>
+          <View style={styles.imageContainer}>
+            <Image 
+              style={styles.imageLogo}
+              source={require('../../assets/RNS.png')}
+              resizeMode="contain"
             />
+          </View>
+          <Text style={styles.title}>리액트 프레임워크/패키지 필터</Text>
+          <TextInput
+            ref={this.textInputRef}
+            style={styles.filterStyle}
+            placeholder="필터를 입력해주세요."
+            onChangeText={this.updateFilter}
+            onBlur={this.onBlurClear}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+        </View>
+        <View style={styles.bottomPart}>
+          <ErrorBoundary>
             <List filterBy={filterBy} />
-          </KeyboardAvoidingView>
-        )}                      
+          </ErrorBoundary>
+        </View>         
       </ScrollView>
     )
   }
@@ -230,19 +204,26 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
   },
   imageContainer: {
+    width: '90%',
+    height: 60, 
     alignSelf: 'center',
-    resizeMode: 'center'
+  },
+  imageLogo: {
+    width: '100%',
+    height: '100%'
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 24,
-    color: '#5E9EF1'
+    fontSize: 22,
+    color: '#5E9EF1',
+    textAlign: 'center'
   },
   filterStyle: {
-    minWidth: '75%',
+    width: '75%',
+    alignSelf: 'center',
     textAlign: 'center',
     marginVertical: 30,
     height: 40,
@@ -250,4 +231,13 @@ const styles = StyleSheet.create({
     borderColor: '#cbcbcb',
     borderRadius: 5
   },
+  topPart: {
+    flex: 3,
+    justifyContent: 'center',
+    alignSelf: 'stretch'
+  },
+  bottomPart: {
+    flex: 4,
+    alignSelf: 'stretch'
+  }
 })

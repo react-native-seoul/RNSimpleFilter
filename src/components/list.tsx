@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {
   Text,
+  View,
   FlatList,
   ListRenderItem,
   TouchableOpacity,
@@ -9,6 +10,7 @@ import {
 } from 'react-native'
 import frameworks from '../../frameworks.json'
 import { tableTitle } from '../utils/consoleFuncs'
+import ErrorMsg from '../utils/errorMsg'
 
 type frameworkDatum = {
   title: string,
@@ -20,7 +22,8 @@ type ListProps = {
 }
 
 type ListState = ListProps & {
-  filteredData: frameworkDatum[]
+  filteredData: frameworkDatum[],
+  boom: boolean
 }
 
 type SnapShot = { // snapshot 타입을 지정하세요 
@@ -83,7 +86,8 @@ class List extends Component<ListProps, ListState> {
     super(props)
     this.state = {
       filterBy: '',
-      filteredData: frameworks
+      filteredData: frameworks,
+      boom: false
     }
     console.log('List(자식) 컴포넌트 시작')
     console.table({
@@ -100,7 +104,7 @@ class List extends Component<ListProps, ListState> {
 
   shouldComponentUpdate(nextProps: ListProps, nextState: ListState) {    
     let returnBoolean = true
-    if (nextState.filterBy === this.state.filterBy) {
+    if (this.props.filterBy === nextProps.filterBy && !nextState.boom) {
       console.log('List(자식) 컴포넌트 업데이트 하지않음')
       returnBoolean = false
     } else {
@@ -175,8 +179,12 @@ class List extends Component<ListProps, ListState> {
     }, tableTitle)    
   }
 
+  onCauseError = () => {
+    this.setState({ boom: true })
+  }
+
   render() {
-    const { filteredData } = this.state
+    const { filteredData, boom } = this.state
     console.log('List(자식) 컴포넌트 렌더')
     console.table({
       List: {
@@ -188,13 +196,23 @@ class List extends Component<ListProps, ListState> {
         snapshot: undefined
       }
     }, tableTitle)
+    if (boom) {
+      return (<ErrorMsg />)
+    }
     return (
-      <FlatList 
-        contentContainerStyle={styles.filterContainer}
-        data={filteredData}
-        keyExtractor={_keyExtractor}
-        renderItem={_renderItem}
-      />
+      <View>
+        <FlatList 
+          contentContainerStyle={styles.filterContainer}
+          data={filteredData}
+          keyExtractor={_keyExtractor}
+          renderItem={_renderItem}
+        />
+        <TouchableOpacity onPress={this.onCauseError}>
+          <View style={styles.errorButton}>
+            <Text>에러 일으키기</Text>
+          </View>
+        </TouchableOpacity> 
+      </View>
     )
   }
 }
@@ -208,5 +226,17 @@ const styles = StyleSheet.create({
   itemTextStyle: {
     fontSize: 15,
     color: '#444'
+  },
+  errorButton: {
+    width: '90%',
+    height: 50,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10,
+    backgroundColor: '#d8d8d8',
+    borderRadius: 5
   }
 })
+
+// throw new Error('List Component(자식) threw an Error!!!')
